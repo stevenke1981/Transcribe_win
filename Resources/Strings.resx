@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+
+  <!-- App Title -->
+  <data name="AppTitle" xml:space="preserve"><value>語音轉文字</value></data>
+
+  <!-- Status -->
+  <data name="StatusIdle" xml:space="preserve"><value>待命中</value></data>
+  <data name="StatusRecording" xml:space="preserve"><value>錄音中...</value></data>
+  <data name="StatusTranscribing" xml:space="preserve"><value>轉錄中...</value></data>
+  <data name="StatusDone" xml:space="preserve"><value>完成</value></data>
+  <data name="StatusError" xml:space="preserve"><value>錯誤</value></data>
+
+  <!-- Buttons -->
+  <data name="BtnRecord" xml:space="preserve"><value>🎙️ 按住錄音</value></data>
+  <data name="BtnStop" xml:space="preserve"><value>⏹️ 停止</value></data>
+  <data name="BtnSettings" xml:space="preserve"><value>⚙️ 設定</value></data>
+
+  <!-- Settings -->
+  <data name="SettingsTitle" xml:space="preserve"><value>設定</value></data>
+  <data name="SettingsServerUrl" xml:space="preserve"><value>伺服器網址</value></data>
+  <data name="SettingsLanguage" xml:space="preserve"><value>語言</value></data>
+  <data name="SettingsMicrophone" xml:space="preserve"><value>麥克風</value></data>
+  <data name="SettingsHotkey" xml:space="preserve"><value>快捷鍵</value></data>
+  <data name="SettingsRecordMode" xml:space="preserve"><value>錄音模式</value></data>
+  <data name="SettingsPushToTalk" xml:space="preserve"><value>按住說話</value></data>
+  <data name="SettingsToggle" xml:space="preserve"><value>切換模式</value></data>
+  <data name="SettingsAutoCopy" xml:space="preserve"><value>自動複製到剪貼簿</value></data>
+  <data name="SettingsAutoEnter" xml:space="preserve"><value>標點結尾自動 Enter</value></data>
+  <data name="SettingsPunctuation" xml:space="preserve"><value>啟用標點符號</value></data>
+  <data name="SettingsSave" xml:space="preserve"><value>儲存</value></data>
+  <data name="SettingsUILanguage" xml:space="preserve"><value>介面語言</value></data>
+
+  <!-- Server Status -->
+  <data name="ServerOnline" xml:space="preserve"><value>伺服器連線中</value></data>
+  <data name="ServerOffline" xml:space="preserve"><value>伺服器離線</value></data>
+
+  <!-- Tray -->
+  <data name="TrayShow" xml:space="preserve"><value>顯示</value></data>
+  <data name="TrayExit" xml:space="preserve"><value>結束</value></data>
+
+  <!-- Transcript -->
+  <data name="TranscriptPlaceholder" xml:space="preserve"><value>轉錄文字將顯示在這裡...</value></data>
+  <data name="TranscriptCopied" xml:space="preserve"><value>已複製!</value></data>
+
+  <!-- Hotkey -->
+  <data name="HotkeyRegistered" xml:space="preserve"><value>快捷鍵已註冊: {0}</value></data>
+  <data name="HotkeyFailed" xml:space="preserve"><value>快捷鍵註冊失敗</value></data>
+</root>

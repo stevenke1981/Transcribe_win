@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+
+  <data name="AppTitle" xml:space="preserve"><value>Voice to Text</value></data>
+  <data name="StatusIdle" xml:space="preserve"><value>Idle</value></data>
+  <data name="StatusRecording" xml:space="preserve"><value>Recording...</value></data>
+  <data name="StatusTranscribing" xml:space="preserve"><value>Transcribing...</value></data>
+  <data name="StatusDone" xml:space="preserve"><value>Done</value></data>
+  <data name="StatusError" xml:space="preserve"><value>Error</value></data>
+  <data name="BtnRecord" xml:space="preserve"><value>🎙️ Hold to Record</value></data>
+  <data name="BtnStop" xml:space="preserve"><value>⏹️ Stop</value></data>
+  <data name="BtnSettings" xml:space="preserve"><value>⚙️ Settings</value></data>
+  <data name="SettingsTitle" xml:space="preserve"><value>Settings</value></data>
+  <data name="SettingsServerUrl" xml:space="preserve"><value>Server URL</value></data>
+  <data name="SettingsLanguage" xml:space="preserve"><value>Language</value></data>
+  <data name="SettingsMicrophone" xml:space="preserve"><value>Microphone</value></data>
+  <data name="SettingsHotkey" xml:space="preserve"><value>Hotkey</value></data>
+  <data name="SettingsRecordMode" xml:space="preserve"><value>Record Mode</value></data>
+  <data name="SettingsPushToTalk" xml:space="preserve"><value>Push to Talk</value></data>
+  <data name="SettingsToggle" xml:space="preserve"><value>Toggle</value></data>
+  <data name="SettingsAutoCopy" xml:space="preserve"><value>Auto Copy to Clipboard</value></data>
+  <data name="SettingsAutoEnter" xml:space="preserve"><value>Auto Enter on Punctuation</value></data>
+  <data name="SettingsPunctuation" xml:space="preserve"><value>Enable Punctuation</value></data>
+  <data name="SettingsSave" xml:space="preserve"><value>Save</value></data>
+  <data name="SettingsUILanguage" xml:space="preserve"><value>UI Language</value></data>
+  <data name="ServerOnline" xml:space="preserve"><value>Server Online</value></data>
+  <data name="ServerOffline" xml:space="preserve"><value>Server Offline</value></data>
+  <data name="TrayShow" xml:space="preserve"><value>Show</value></data>
+  <data name="TrayExit" xml:space="preserve"><value>Exit</value></data>
+  <data name="TranscriptPlaceholder" xml:space="preserve"><value>Transcribed text will appear here...</value></data>
+  <data name="TranscriptCopied" xml:space="preserve"><value>Copied!</value></data>
+  <data name="HotkeyRegistered" xml:space="preserve"><value>Hotkey registered: {0}</value></data>
+  <data name="HotkeyFailed" xml:space="preserve"><value>Hotkey registration failed</value></data>
+</root>

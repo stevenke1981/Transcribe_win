@@ -1,0 +1,174 @@
+<Window x:Class="TranscribeWin.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="語音轉文字" Height="580" Width="420"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BgPrimaryBrush}"
+        ResizeMode="CanMinimize"
+        Closing="Window_Closing"
+        StateChanged="Window_StateChanged">
+
+    <Window.Resources>
+        <!-- Pulse animation for recording -->
+        <Storyboard x:Key="PulseAnimation" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="RecordGlow" Storyboard.TargetProperty="Opacity"
+                             From="0.3" To="0.9" Duration="0:0:0.6" AutoReverse="True"/>
+        </Storyboard>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>   <!-- Header -->
+            <RowDefinition Height="Auto"/>   <!-- Server status -->
+            <RowDefinition Height="Auto"/>   <!-- Record area -->
+            <RowDefinition Height="*"/>      <!-- Transcript -->
+            <RowDefinition Height="Auto"/>   <!-- Settings panel -->
+        </Grid.RowDefinitions>
+
+        <!-- ===== Header ===== -->
+        <Grid Grid.Row="0" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="TitleText" Text="🎙️ 語音轉文字" 
+                       FontSize="22" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"
+                       VerticalAlignment="Center"/>
+            <Button x:Name="BtnToggleSettings" Grid.Column="1" Content="⚙️" 
+                    Style="{StaticResource SecondaryButton}" Click="BtnToggleSettings_Click"
+                    ToolTip="設定" FontSize="16" Padding="8,6" Width="36" Height="36"/>
+        </Grid>
+
+        <!-- ===== Server Status ===== -->
+        <Border Grid.Row="1" CornerRadius="8" Padding="12,8" Margin="0,0,0,12"
+                Background="{StaticResource BgCardBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Ellipse x:Name="ServerDot" Width="10" Height="10" Margin="0,0,8,0"
+                         Fill="{StaticResource AccentRedBrush}" VerticalAlignment="Center"/>
+                <TextBlock x:Name="ServerStatusText" Grid.Column="1" Text="伺服器離線" 
+                           Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"
+                           VerticalAlignment="Center"/>
+                <TextBlock x:Name="HotkeyText" Grid.Column="2" Text="Ctrl+Alt+Space" 
+                           Foreground="{StaticResource AccentPurpleBrush}" FontSize="11"
+                           VerticalAlignment="Center" Opacity="0.8"/>
+            </Grid>
+        </Border>
+
+        <!-- ===== Record Area ===== -->
+        <StackPanel Grid.Row="2" HorizontalAlignment="Center" Margin="0,8,0,16">
+            <Grid HorizontalAlignment="Center">
+                <!-- Glow ring for recording state -->
+                <Ellipse x:Name="RecordGlow" Width="100" Height="100" Opacity="0">
+                    <Ellipse.Fill>
+                        <RadialGradientBrush>
+                            <GradientStop Color="#60F85149" Offset="0.5"/>
+                            <GradientStop Color="#00F85149" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <Button x:Name="BtnRecord" Style="{StaticResource RecordButton}"
+                        PreviewMouseLeftButtonDown="BtnRecord_MouseDown"
+                        PreviewMouseLeftButtonUp="BtnRecord_MouseUp"
+                        Click="BtnRecord_Click"/>
+            </Grid>
+            <TextBlock x:Name="StatusText" Text="待命中" 
+                       HorizontalAlignment="Center" Margin="0,10,0,0"
+                       Foreground="{StaticResource TextSecondaryBrush}" FontSize="13"/>
+            <!-- Volume bar -->
+            <Border CornerRadius="3" Margin="0,8,0,0" Width="200" Height="6"
+                    Background="{StaticResource BgCardBrush}">
+                <Border x:Name="VolumeBar" CornerRadius="3" Height="6"
+                        HorizontalAlignment="Left" Width="0">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#FF3FB950" Offset="0"/>
+                            <GradientStop Color="#FFD29922" Offset="0.7"/>
+                            <GradientStop Color="#FFF85149" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+            </Border>
+        </StackPanel>
+
+        <!-- ===== Transcript Area ===== -->
+        <Border Grid.Row="3" CornerRadius="10" Margin="0,0,0,12"
+                Background="{StaticResource BgCardBrush}" BorderBrush="{StaticResource BorderBrush}" 
+                BorderThickness="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="12,8,12,0">
+                    <TextBlock Text="📝 轉錄結果" Foreground="{StaticResource TextSecondaryBrush}" 
+                               FontSize="11" VerticalAlignment="Center"/>
+                    <Button x:Name="BtnCopy" Content="📋" HorizontalAlignment="Right"
+                            Style="{StaticResource SecondaryButton}" Padding="6,4"
+                            FontSize="12" Click="BtnCopy_Click" ToolTip="複製"/>
+                </Grid>
+                <TextBox x:Name="TranscriptBox" Grid.Row="1" 
+                         Style="{StaticResource DarkTextBox}"
+                         Text="轉錄文字將顯示在這裡..."
+                         TextWrapping="Wrap" AcceptsReturn="True"
+                         VerticalScrollBarVisibility="Auto" IsReadOnly="True"
+                         BorderThickness="0" Margin="4,0,4,4"
+                         Foreground="{StaticResource TextSecondaryBrush}"/>
+            </Grid>
+        </Border>
+
+        <!-- ===== Settings Panel (collapsible) ===== -->
+        <Border x:Name="SettingsPanel" Grid.Row="4" CornerRadius="10" Padding="16,12"
+                Background="{StaticResource BgCardBrush}" BorderBrush="{StaticResource BorderBrush}" 
+                BorderThickness="1" Visibility="Collapsed">
+            <StackPanel>
+                <TextBlock Text="⚙️ 設定" FontSize="15" FontWeight="SemiBold" 
+                           Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,12"/>
+
+                <!-- Server URL -->
+                <TextBlock x:Name="LblServerUrl" Text="伺服器網址" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" Margin="0,0,0,4"/>
+                <TextBox x:Name="TxtServerUrl" Style="{StaticResource DarkTextBox}" Margin="0,0,0,8"/>
+
+                <!-- Language -->
+                <TextBlock x:Name="LblLanguage" Text="轉錄語言" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" Margin="0,0,0,4"/>
+                <ComboBox x:Name="CmbLanguage" Style="{StaticResource DarkComboBox}" Margin="0,0,0,8">
+                    <ComboBoxItem Content="zh (中文)" Tag="zh"/>
+                    <ComboBoxItem Content="en (English)" Tag="en"/>
+                    <ComboBoxItem Content="ja (日本語)" Tag="ja"/>
+                    <ComboBoxItem Content="ko (한국어)" Tag="ko"/>
+                </ComboBox>
+
+                <!-- Microphone -->
+                <TextBlock x:Name="LblMic" Text="麥克風" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" Margin="0,0,0,4"/>
+                <ComboBox x:Name="CmbMicrophone" Style="{StaticResource DarkComboBox}" Margin="0,0,0,8"/>
+
+                <!-- UI Language -->
+                <TextBlock x:Name="LblUILanguage" Text="介面語言" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" Margin="0,0,0,4"/>
+                <ComboBox x:Name="CmbUILanguage" Style="{StaticResource DarkComboBox}" Margin="0,0,0,8">
+                    <ComboBoxItem Content="繁體中文" Tag="zh-TW"/>
+                    <ComboBoxItem Content="English" Tag="en-US"/>
+                </ComboBox>
+
+                <!-- Record Mode -->
+                <TextBlock x:Name="LblRecordMode" Text="錄音模式" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" Margin="0,0,0,4"/>
+                <ComboBox x:Name="CmbRecordMode" Style="{StaticResource DarkComboBox}" Margin="0,0,0,8">
+                    <ComboBoxItem x:Name="CmbItemPTT" Content="按住說話" Tag="PushToTalk"/>
+                    <ComboBoxItem x:Name="CmbItemToggle" Content="切換模式" Tag="Toggle"/>
+                </ComboBox>
+
+                <!-- Checkboxes -->
+                <CheckBox x:Name="ChkAutoCopy" Content="自動複製到剪貼簿" Style="{StaticResource DarkCheckBox}"/>
+                <CheckBox x:Name="ChkAutoEnter" Content="標點結尾自動 Enter" Style="{StaticResource DarkCheckBox}"/>
+                <CheckBox x:Name="ChkPunctuation" Content="啟用標點符號" Style="{StaticResource DarkCheckBox}" IsChecked="True"/>
+
+                <!-- Save Button -->
+                <Button x:Name="BtnSave" Content="💾 儲存" Style="{StaticResource PrimaryButton}" 
+                        Margin="0,12,0,0" Click="BtnSave_Click"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
