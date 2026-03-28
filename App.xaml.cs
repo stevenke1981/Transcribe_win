@@ -1,7 +1,5 @@
 using System.Globalization;
 using System.Windows;
-using TranscribeWin.Models;
-using TranscribeWin.Services;
 
 namespace TranscribeWin;
 

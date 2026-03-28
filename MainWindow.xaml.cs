@@ -21,6 +21,7 @@ public partial class MainWindow : Window
     private bool _isToggleRecording;
     private Storyboard? _pulseStoryboard;
     private Hardcodet.Wpf.TaskbarNotification.TaskbarIcon? _trayIcon;
+    private CancellationTokenSource? _statusResetCts;
 
     public MainWindow()
     {
@@ -211,9 +212,14 @@ public partial class MainWindow : Window
         Dispatcher.Invoke(() =>
         {
             if (_isToggleRecording)
+            {
                 StopRecording();
+            }
             else
+            {
+                TextInjector.SaveFocusedWindow();
                 StartRecording();
+            }
             _isToggleRecording = !_isToggleRecording;
         });
     }
@@ -226,7 +232,10 @@ public partial class MainWindow : Window
         Dispatcher.Invoke(() =>
         {
             if (!_recorder.IsRecording)
+            {
+                TextInjector.SaveFocusedWindow();
                 StartRecording();
+            }
         });
     }
 
@@ -281,11 +290,13 @@ public partial class MainWindow : Window
 
     private void StartRecording()
     {
+        // Cancel any pending status reset from previous recording
+        _statusResetCts?.Cancel();
+
         int micIndex = 0;
         if (CmbMicrophone.SelectedItem is ComboBoxItem micItem)
             micIndex = (int)(micItem.Tag ?? 0);
 
-        TextInjector.SaveFocusedWindow();
         _recorder.StartRecording(micIndex);
 
         StatusText.Text = I18n.Get("StatusRecording");
@@ -344,10 +355,15 @@ public partial class MainWindow : Window
                 StatusText.Foreground = (SolidColorBrush)FindResource("AccentRedBrush");
             }
 
-            // Reset status after 3 seconds
-            await Task.Delay(3000);
-            StatusText.Text = I18n.Get("StatusIdle");
-            StatusText.Foreground = (SolidColorBrush)FindResource("TextSecondaryBrush");
+            // Reset status after 3 seconds (cancellable)
+            _statusResetCts = new CancellationTokenSource();
+            try
+            {
+                await Task.Delay(3000, _statusResetCts.Token);
+                StatusText.Text = I18n.Get("StatusIdle");
+                StatusText.Foreground = (SolidColorBrush)FindResource("TextSecondaryBrush");
+            }
+            catch (TaskCanceledException) { }
         });
     }
 

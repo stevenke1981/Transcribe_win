@@ -7,12 +7,14 @@ namespace TranscribeWin.Services;
 public class TranscribeClient : IDisposable
 {
     private readonly HttpClient _httpClient;
+    private readonly HttpClient _healthClient;
     private string _baseUrl;
 
     public TranscribeClient(string baseUrl)
     {
         _baseUrl = baseUrl.TrimEnd('/');
         _httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(60) };
+        _healthClient = new HttpClient { Timeout = TimeSpan.FromSeconds(3) };
     }
 
     public void UpdateBaseUrl(string baseUrl)
@@ -53,7 +55,7 @@ public class TranscribeClient : IDisposable
     {
         try
         {
-            var response = await _httpClient.GetAsync($"{_baseUrl}/healthz");
+            var response = await _healthClient.GetAsync($"{_baseUrl}/healthz");
             return response.IsSuccessStatusCode;
         }
         catch
@@ -65,5 +67,6 @@ public class TranscribeClient : IDisposable
     public void Dispose()
     {
         _httpClient.Dispose();
+        _healthClient.Dispose();
     }
 }

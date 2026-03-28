@@ -67,12 +67,14 @@ public class AudioRecorder : IDisposable
         _waveWriter?.Write(e.Buffer, 0, e.BytesRecorded);
 
         // Calculate RMS volume
-        float sum = 0;
         int sampleCount = e.BytesRecorded / 2;
-        for (int i = 0; i < e.BytesRecorded; i += 2)
+        if (sampleCount == 0) return;
+
+        double sum = 0;
+        for (int i = 0; i < e.BytesRecorded - 1; i += 2)
         {
             short sample = (short)(e.Buffer[i] | (e.Buffer[i + 1] << 8));
-            sum += sample * sample;
+            sum += (long)sample * sample;
         }
         float rms = (float)Math.Sqrt(sum / sampleCount);
         float normalizedVolume = Math.Min(rms / 10000f, 1.0f);
