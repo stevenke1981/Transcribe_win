@@ -43,6 +43,7 @@ public partial class MainWindow : Window
         _trayIcon = new Hardcodet.Wpf.TaskbarNotification.TaskbarIcon
         {
             ToolTipText = I18n.Get("AppTitle"),
+            Icon = CreateTrayIcon(),
             Visibility = Visibility.Collapsed
         };
         _trayIcon.TrayMouseDoubleClick += (s, e) => ShowFromTray();
@@ -65,6 +66,28 @@ public partial class MainWindow : Window
         menu.Items.Add(showItem);
         menu.Items.Add(exitItem);
         _trayIcon.ContextMenu = menu;
+    }
+
+    private static System.Drawing.Icon CreateTrayIcon()
+    {
+        // Create a simple 32x32 microphone icon
+        using var bmp = new System.Drawing.Bitmap(32, 32);
+        using var g = System.Drawing.Graphics.FromImage(bmp);
+        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+        g.Clear(System.Drawing.Color.Transparent);
+
+        using var brush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(88, 166, 255));
+        using var pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(88, 166, 255), 2);
+
+        // Mic body (rounded rect)
+        g.FillEllipse(brush, 11, 3, 10, 14);
+        // Mic arc
+        g.DrawArc(pen, 8, 10, 16, 12, 0, 180);
+        // Mic stand
+        g.DrawLine(pen, 16, 22, 16, 27);
+        g.DrawLine(pen, 11, 27, 21, 27);
+
+        return System.Drawing.Icon.FromHandle(bmp.GetHicon());
     }
 
     private void ShowFromTray()
