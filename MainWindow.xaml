@@ -107,11 +107,14 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" Margin="12,8,12,0">
-                    <TextBlock Text="📝 轉錄結果" Foreground="{StaticResource TextSecondaryBrush}" 
+                    <TextBlock x:Name="LblTranscript" Text="📝 轉錄結果" Foreground="{StaticResource TextSecondaryBrush}" 
                                FontSize="11" VerticalAlignment="Center"/>
-                    <Button x:Name="BtnCopy" Content="📋" HorizontalAlignment="Right"
-                            Style="{StaticResource SecondaryButton}" Padding="6,4"
-                            FontSize="12" Click="BtnCopy_Click" ToolTip="複製"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button x:Name="BtnHistory" Content="🗂️" Style="{StaticResource SecondaryButton}" Padding="6,4"
+                                FontSize="12" Margin="0,0,6,0" Click="BtnHistory_Click" ToolTip="歷史紀錄"/>
+                        <Button x:Name="BtnCopy" Content="📋" Style="{StaticResource SecondaryButton}" Padding="6,4"
+                                FontSize="12" Click="BtnCopy_Click" ToolTip="複製"/>
+                    </StackPanel>
                 </Grid>
                 <TextBox x:Name="TranscriptBox" Grid.Row="1" 
                          Style="{StaticResource DarkTextBox}"

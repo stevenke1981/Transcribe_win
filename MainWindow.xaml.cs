@@ -204,6 +204,7 @@ public partial class MainWindow : Window
         StatusText.Text = I18n.Get("StatusIdle");
         TranscriptBox.Text = I18n.Get("TranscriptPlaceholder");
         BtnToggleSettings.ToolTip = I18n.Get("SettingsTitle");
+        BtnHistory.ToolTip = I18n.Get("HistoryTooltip");
 
         // Settings labels
         LblServerUrl.Text = I18n.Get("SettingsServerUrl");
@@ -353,8 +354,22 @@ public partial class MainWindow : Window
 
                 if (!string.IsNullOrWhiteSpace(text))
                 {
-                    TranscriptBox.Text = text;
+                    if (TranscriptBox.Text == I18n.Get("TranscriptPlaceholder"))
+                        TranscriptBox.Clear();
+
+                    string timeStr = DateTime.Now.ToString("HH:mm:ss");
+                    string historyLine = $"[{timeStr}] {text}\r\n";
+                    
+                    TranscriptBox.AppendText(historyLine);
+                    TranscriptBox.ScrollToEnd();
                     TranscriptBox.Foreground = (SolidColorBrush)FindResource("TextPrimaryBrush");
+
+                    try
+                    {
+                        var historyPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "history.txt");
+                        System.IO.File.AppendAllText(historyPath, historyLine);
+                    }
+                    catch { }
 
                     // Auto copy
                     if (_settings.AutoCopyToClipboard)
@@ -464,6 +479,19 @@ public partial class MainWindow : Window
     #endregion
 
     #region Window Events
+
+    private void BtnHistory_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var historyPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "history.txt");
+            if (!System.IO.File.Exists(historyPath))
+                System.IO.File.WriteAllText(historyPath, "");
+
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(historyPath) { UseShellExecute = true });
+        }
+        catch { }
+    }
 
     private void BtnCopy_Click(object sender, RoutedEventArgs e)
     {
