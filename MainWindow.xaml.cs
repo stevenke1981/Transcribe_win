@@ -139,6 +139,18 @@ public partial class MainWindow : Window
         // Record mode
         CmbRecordMode.SelectedIndex = _settings.RecordMode == "Toggle" ? 1 : 0;
 
+        // Hotkey
+        for (int i = 0; i < CmbModifiers.Items.Count; i++)
+        {
+            if (CmbModifiers.Items[i] is ComboBoxItem item && item.Tag?.ToString() == _settings.HotkeyModifiers)
+            {
+                CmbModifiers.SelectedIndex = i;
+                break;
+            }
+        }
+        if (CmbModifiers.SelectedIndex < 0) CmbModifiers.SelectedIndex = 3; // "Ctrl+Alt" Default
+        TxtKey.Text = _settings.HotkeyKey;
+
         // Checkboxes
         ChkAutoCopy.IsChecked = _settings.AutoCopyToClipboard;
         ChkAutoEnter.IsChecked = _settings.AutoEnterOnPunctuation;
@@ -213,6 +225,7 @@ public partial class MainWindow : Window
         LblMic.Text = I18n.Get("SettingsMicrophone");
         LblUILanguage.Text = I18n.Get("SettingsUILanguage");
         LblRecordMode.Text = I18n.Get("SettingsRecordMode");
+        LblHotkey.Text = I18n.Get("SettingsHotkey");
         CmbItemPTT.Content = I18n.Get("SettingsPushToTalk");
         CmbItemToggle.Content = I18n.Get("SettingsToggle");
         ChkAutoCopy.Content = I18n.Get("SettingsAutoCopy");
@@ -443,6 +456,12 @@ public partial class MainWindow : Window
             _settings.RecordMode = modeItem.Tag?.ToString() ?? "PushToTalk";
             _isToggleRecording = false; // Reset toggle state on mode change
         }
+
+        if (CmbModifiers.SelectedItem is ComboBoxItem modItem)
+            _settings.HotkeyModifiers = modItem.Tag?.ToString() ?? "Ctrl+Alt";
+
+        string newKey = TxtKey.Text.Trim();
+        _settings.HotkeyKey = string.IsNullOrWhiteSpace(newKey) ? "Space" : newKey;
 
         _settings.AutoCopyToClipboard = ChkAutoCopy.IsChecked ?? true;
         _settings.AutoEnterOnPunctuation = ChkAutoEnter.IsChecked ?? false;

@@ -165,6 +165,27 @@
                     <ComboBoxItem x:Name="CmbItemToggle" Content="切換模式" Tag="Toggle"/>
                 </ComboBox>
 
+                <!-- Hotkey -->
+                <TextBlock x:Name="LblHotkey" Text="快捷鍵" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" Margin="0,0,0,4"/>
+                <Grid Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="CmbModifiers" Style="{StaticResource DarkComboBox}">
+                        <ComboBoxItem Content="Ctrl" Tag="Ctrl"/>
+                        <ComboBoxItem Content="Alt" Tag="Alt"/>
+                        <ComboBoxItem Content="Shift" Tag="Shift"/>
+                        <ComboBoxItem Content="Ctrl+Alt" Tag="Ctrl+Alt"/>
+                        <ComboBoxItem Content="Ctrl+Shift" Tag="Ctrl+Shift"/>
+                        <ComboBoxItem Content="Alt+Shift" Tag="Alt+Shift"/>
+                        <ComboBoxItem Content="Ctrl+Alt+Shift" Tag="Ctrl+Alt+Shift"/>
+                    </ComboBox>
+                    <TextBlock Grid.Column="1" Text="+" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center" Margin="8,0"/>
+                    <TextBox x:Name="TxtKey" Grid.Column="2" Style="{StaticResource DarkTextBox}" ToolTip="例如: Space, F1, A~Z"/>
+                </Grid>
+
                 <!-- Checkboxes -->
                 <CheckBox x:Name="ChkAutoCopy" Content="自動複製到剪貼簿" Style="{StaticResource DarkCheckBox}"/>
                 <CheckBox x:Name="ChkAutoEnter" Content="標點結尾自動 Enter" Style="{StaticResource DarkCheckBox}"/>
