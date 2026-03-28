@@ -169,6 +169,7 @@
                 <CheckBox x:Name="ChkAutoCopy" Content="自動複製到剪貼簿" Style="{StaticResource DarkCheckBox}"/>
                 <CheckBox x:Name="ChkAutoEnter" Content="標點結尾自動 Enter" Style="{StaticResource DarkCheckBox}"/>
                 <CheckBox x:Name="ChkPunctuation" Content="啟用標點符號" Style="{StaticResource DarkCheckBox}" IsChecked="True"/>
+                <CheckBox x:Name="ChkConvertToTraditional" Content="簡體自動轉換為繁體" Style="{StaticResource DarkCheckBox}" IsChecked="True"/>
 
                 <!-- Save Button -->
                 <Button x:Name="BtnSave" Content="💾 儲存" Style="{StaticResource PrimaryButton}" 

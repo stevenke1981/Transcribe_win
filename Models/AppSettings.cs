@@ -14,6 +14,7 @@ public class AppSettings
     public bool AutoCopyToClipboard { get; set; } = true;
     public bool AutoEnterOnPunctuation { get; set; } = false;
     public bool Punctuation { get; set; } = true;
+    public bool ConvertToTraditional { get; set; } = true;
 
     private static readonly string SettingsPath = Path.Combine(
         AppDomain.CurrentDomain.BaseDirectory, "settings.json");

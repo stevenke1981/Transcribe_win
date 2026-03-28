@@ -143,6 +143,7 @@ public partial class MainWindow : Window
         ChkAutoCopy.IsChecked = _settings.AutoCopyToClipboard;
         ChkAutoEnter.IsChecked = _settings.AutoEnterOnPunctuation;
         ChkPunctuation.IsChecked = _settings.Punctuation;
+        ChkConvertToTraditional.IsChecked = _settings.ConvertToTraditional;
     }
 
     private void SetupEvents()
@@ -217,6 +218,7 @@ public partial class MainWindow : Window
         ChkAutoCopy.Content = I18n.Get("SettingsAutoCopy");
         ChkAutoEnter.Content = I18n.Get("SettingsAutoEnter");
         ChkPunctuation.Content = I18n.Get("SettingsPunctuation");
+        ChkConvertToTraditional.Content = I18n.Get("SettingsConvertToTraditional");
         BtnSave.Content = $"💾 {I18n.Get("SettingsSave")}";
 
         // Tray update
@@ -354,16 +356,16 @@ public partial class MainWindow : Window
 
                 if (!string.IsNullOrWhiteSpace(text))
                 {
-                    if (TranscriptBox.Text == I18n.Get("TranscriptPlaceholder"))
-                        TranscriptBox.Clear();
+                    // Convert to Traditional if enabled
+                    if (_settings.ConvertToTraditional)
+                        text = ChineseConverter.ToTraditional(text);
 
-                    string timeStr = DateTime.Now.ToString("HH:mm:ss");
-                    string historyLine = $"[{timeStr}] {text}\r\n";
-                    
-                    TranscriptBox.AppendText(historyLine);
-                    TranscriptBox.ScrollToEnd();
+                    TranscriptBox.Text = text;
                     TranscriptBox.Foreground = (SolidColorBrush)FindResource("TextPrimaryBrush");
 
+                    // Save history
+                    string timeStr = DateTime.Now.ToString("HH:mm:ss");
+                    string historyLine = $"[{timeStr}] {text}\r\n\r\n";
                     try
                     {
                         var historyPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "history.txt");
@@ -445,6 +447,7 @@ public partial class MainWindow : Window
         _settings.AutoCopyToClipboard = ChkAutoCopy.IsChecked ?? true;
         _settings.AutoEnterOnPunctuation = ChkAutoEnter.IsChecked ?? false;
         _settings.Punctuation = ChkPunctuation.IsChecked ?? true;
+        _settings.ConvertToTraditional = ChkConvertToTraditional.IsChecked ?? true;
 
         // UI Language change
         if (CmbUILanguage.SelectedItem is ComboBoxItem uiLangItem)
@@ -480,17 +483,20 @@ public partial class MainWindow : Window
 
     #region Window Events
 
+    private HistoryWindow? _historyWindow;
+
     private void BtnHistory_Click(object sender, RoutedEventArgs e)
     {
-        try
+        if (_historyWindow == null || !_historyWindow.IsLoaded)
         {
-            var historyPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "history.txt");
-            if (!System.IO.File.Exists(historyPath))
-                System.IO.File.WriteAllText(historyPath, "");
-
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(historyPath) { UseShellExecute = true });
+            _historyWindow = new HistoryWindow();
+            _historyWindow.Show();
         }
-        catch { }
+        else
+        {
+            _historyWindow.WindowState = WindowState.Normal;
+            _historyWindow.Activate();
+        }
     }
 
     private void BtnCopy_Click(object sender, RoutedEventArgs e)
