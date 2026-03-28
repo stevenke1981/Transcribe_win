@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using WindowsInput;
 
 namespace TranscribeWin.Services;
 
@@ -10,9 +11,6 @@ public static class TextInjector
     [DllImport("user32.dll")]
     private static extern bool SetForegroundWindow(IntPtr hWnd);
 
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
-
     [DllImport("user32.dll")]
     private static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
 
@@ -22,35 +20,8 @@ public static class TextInjector
     [DllImport("kernel32.dll")]
     private static extern uint GetCurrentThreadId();
 
-    [StructLayout(LayoutKind.Sequential)]
-    private struct INPUT
-    {
-        public uint type;
-        public INPUTUNION u;
-    }
-
-    [StructLayout(LayoutKind.Explicit)]
-    private struct INPUTUNION
-    {
-        [FieldOffset(0)] public KEYBDINPUT ki;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct KEYBDINPUT
-    {
-        public ushort wVk;
-        public ushort wScan;
-        public uint dwFlags;
-        public uint time;
-        public IntPtr dwExtraInfo;
-    }
-
-    private const uint INPUT_KEYBOARD = 1;
-    private const uint KEYEVENTF_UNICODE = 0x0004;
-    private const uint KEYEVENTF_KEYUP = 0x0002;
-    private const ushort VK_RETURN = 0x0D;
-
     private static IntPtr _previousWindow = IntPtr.Zero;
+    private static readonly InputSimulator _simulator = new InputSimulator();
 
     public static void SaveFocusedWindow()
     {
@@ -75,8 +46,8 @@ public static class TextInjector
         if (targetThread != currentThread)
             AttachThreadInput(currentThread, targetThread, false);
 
-        // Send each character using Unicode SendInput
-        SendUnicodeString(text);
+        // Type the text using InputSimulator
+        _simulator.Keyboard.TextEntry(text);
 
         // Auto Enter on punctuation
         if (autoEnterOnPunctuation && text.Length > 0)
@@ -85,94 +56,10 @@ public static class TextInjector
             if (lastChar == '。' || lastChar == '！' || lastChar == '？' ||
                 lastChar == '.' || lastChar == '!' || lastChar == '?')
             {
-                SendEnterKey();
+                _simulator.Keyboard.KeyPress(WindowsInput.Native.VirtualKeyCode.RETURN);
             }
         }
 
         return true;
-    }
-
-    private static void SendUnicodeString(string text)
-    {
-        var inputs = new List<INPUT>();
-
-        foreach (char c in text)
-        {
-            // Key down
-            inputs.Add(new INPUT
-            {
-                type = INPUT_KEYBOARD,
-                u = new INPUTUNION
-                {
-                    ki = new KEYBDINPUT
-                    {
-                        wVk = 0,
-                        wScan = c,
-                        dwFlags = KEYEVENTF_UNICODE,
-                        time = 0,
-                        dwExtraInfo = IntPtr.Zero
-                    }
-                }
-            });
-
-            // Key up
-            inputs.Add(new INPUT
-            {
-                type = INPUT_KEYBOARD,
-                u = new INPUTUNION
-                {
-                    ki = new KEYBDINPUT
-                    {
-                        wVk = 0,
-                        wScan = c,
-                        dwFlags = KEYEVENTF_UNICODE | KEYEVENTF_KEYUP,
-                        time = 0,
-                        dwExtraInfo = IntPtr.Zero
-                    }
-                }
-            });
-        }
-
-        var inputArray = inputs.ToArray();
-        SendInput((uint)inputArray.Length, inputArray, Marshal.SizeOf<INPUT>());
-    }
-
-    private static void SendEnterKey()
-    {
-        var inputs = new INPUT[2];
-
-        inputs[0] = new INPUT
-        {
-            type = INPUT_KEYBOARD,
-            u = new INPUTUNION
-            {
-                ki = new KEYBDINPUT
-                {
-                    wVk = VK_RETURN,
-                    wScan = 0,
-                    dwFlags = 0,
-                    time = 0,
-                    dwExtraInfo = IntPtr.Zero
-                }
-            }
-        };
-
-        inputs[1] = new INPUT
-        {
-            type = INPUT_KEYBOARD,
-            u = new INPUTUNION
-            {
-                ki = new KEYBDINPUT
-                {
-                    wVk = VK_RETURN,
-                    wScan = 0,
-                    dwFlags = KEYEVENTF_KEYUP,
-                    time = 0,
-                    dwExtraInfo = IntPtr.Zero
-                }
-            }
-        };
-
-        SendInput(2, inputs, Marshal.SizeOf<INPUT>());
     }
 }
